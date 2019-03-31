@@ -16,8 +16,8 @@ We also provide small try_out.zip file for the test purpose.
 - Pyrouge
 
 ### Run training
-`src/main.py -data pubmed -save_dir SAVE_DIR`
+`python src/main.py -data pubmed -save_dir SAVE_DIR`
 
 
 ### Run decoding
-`src/decode.py -data pubmed -mode decode -train_from MODEL_PATH`
+`python src/decode.py -data pubmed -mode decode -train_from models/MODEL_PATH`
