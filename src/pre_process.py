@@ -7,7 +7,7 @@ Data processing for NN
 from __future__ import unicode_literals
 from dataclasses import dataclass
 from itertools import islice
-from typing import Dict, NamedTuple, List, Union, Optional, TypeVar, Iterator
+from typing import Dict, List, Union, Optional, TypeVar, Iterator
 
 from config import config
 import random
@@ -123,11 +123,17 @@ class Sentence:
                         word_ids_oov=self.word_ids_oov + [padding_id]*needed_padding)
 
 
-class Section(NamedTuple):
+class Section:
     name: str
     words: List[str]
     word_ids: List[int]
     word_ids_oov: List[int]
+
+    def __init__(self, name, words, word_ids, word_ids_oov):
+        self.name = name
+        self.words = words
+        self.word_ids = word_ids
+        self.word_ids_oov = word_ids_oov
 
     def __len__(self):
         assert len(self.word_ids) == len(self.words), 'Parallel arrays must be the same length!'
@@ -144,11 +150,17 @@ class Section(NamedTuple):
         return Section(name=self.name, words=words, word_ids=word_ids, word_ids_oov=word_ids_oov)
 
 
-class Article(NamedTuple):
+class Article:
     secs: List[Section]
     sec_mask: List[int]
     oovv: Labeler
     id: str
+
+    def __init__(self, secs, sec_mask, oovv, id):
+        self.secs = secs
+        self.sec_mask = sec_mask
+        self.oovv = oovv
+        self.id = id
 
     def __len__(self):
         return len(self.secs)
@@ -218,10 +230,15 @@ class Article(NamedTuple):
         return Article(secs=secs, oovv=self.oovv, sec_mask=sec_mask, id=self.id)
 
 
-class Abstract(NamedTuple):
+class Abstract:
     words: List[str]
     word_ids: List[int]
     word_ids_oov: List[int]
+
+    def __init__(self, words, word_ids, word_ids_oov):
+        self.words = words
+        self.word_ids = word_ids
+        self.word_ids_oov = word_ids_oov
 
     def __len__(self):
         assert len(self.words) == len(self.word_ids), "need to match"
@@ -264,9 +281,13 @@ class Abstract(NamedTuple):
         return Abstract(words=words, word_ids=word_ids, word_ids_oov=word_ids_oov)
 
 
-class Example(NamedTuple):
+class Example:
     article: Article
     abstract: Abstract
+
+    def __init__(self, article, abstract):
+        self.article = article
+        self.abstract = abstract
 
     def padded(self, article_sec_length: int, article_max_word_len: int, abstract_max_word_len: int, vocab: Vocab) -> 'Example':
         return Example(article=self.article.padded(article_max_word_len, article_sec_length, vocab),
@@ -376,7 +397,7 @@ def batchify(examples: Iterator[Example], batch_size: int, vocab: Vocab, repeat:
     """
     if repeat:
         for e in examples:
-            yield Batch(unpadded_examples=sorted([e for _ in range(batch_size)], key=lambda x: -min(x.article.longest_word_len, config.max_sec_len)*len(x.article)), vocab=vocab)
+            yield Batch(unpadded_examples=[e for _ in range(batch_size)], vocab=vocab)
     else:
         ex_subset = []
 
