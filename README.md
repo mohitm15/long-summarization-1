@@ -1,5 +1,5 @@
 # long-summarization
-Pytorch implementation of NAACL 2018 ["A Discourse-Aware Attention Model for Abstractive Summarization of Long Documents"](https://arxiv.org/abs/1804.05685) [(code)](https://github.com/acohan/long-summarization)
+Pytorch implementation of NAACL 2018 ["A Discourse-Aware Attention Model for Abstractive Summarization of Long Documents"](https://arxiv.org/abs/1804.05685) [(original TensorFlow code)](https://github.com/acohan/long-summarization)
 
 ### Data
 
