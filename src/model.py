@@ -100,6 +100,7 @@ class Encoder(nn.Module):
         enc_outputs = nn.utils.rnn.pad_packed_sequence(enc_outputs, batch_first=True)[0].contiguous()
 
         sec_input = enc_outputs.view(input.size(0), secL, wordL, -1)[:,:,-1,:]
+        sec_input = self.dropout(sec_input)
         sec_input = self.sec(sec_input)
         packed_sec = nn.utils.rnn.pack_padded_sequence(sec_input, sec_lens, batch_first=True)
         enc_sec_outputs, hidden = self.rnn_sec(packed_sec)
